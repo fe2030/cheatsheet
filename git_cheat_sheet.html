@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git 2.23+ チートシート - はじめの1枚</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e3f2fd;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --accent: #0066cc;
+            --accent-light: #4d94ff;
+            --border: #dee2e6;
+            --border-light: #e9ecef;
+            --code-bg: #f0f4f8;
+            --highlight: #0052a3;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Noto Sans', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+            background-image: linear-gradient(180deg, #ffffff 0%, #f0f8ff 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .version-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+            background-color: var(--bg-secondary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .copy-hint {
+            color: var(--accent);
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--bg-tertiary);
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid var(--accent-light);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.9;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .section {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        h2 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--bg-tertiary);
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        th:first-child {
+            width: 32%;
+        }
+
+        td:first-child {
+            color: var(--text-secondary);
+            width: 32%;
+        }
+
+        td:last-child {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--highlight);
+            border: 1px solid var(--border-light);
+        }
+
+        .command {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--accent-light);
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--accent);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .command:hover {
+            background-color: var(--accent);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .note {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .warning {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .deprecated {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .quick-ref {
+            background-color: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 2px solid var(--accent);
+            box-shadow: 0 3px 8px var(--shadow);
+        }
+
+        .quick-ref h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .quick-ref ol {
+            list-style: none;
+            counter-reset: item;
+        }
+
+        .quick-ref li {
+            counter-increment: item;
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .quick-ref li:before {
+            content: counter(item);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--accent);
+            color: white;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .highlight-box {
+            background-color: var(--bg-tertiary);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        .highlight-box h3 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            td:first-child {
+                width: 40%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Git 2.23+ チートシート</h1>
+            <p class="subtitle">初学者が「初回 push 済み」後の日常作業でよく使う操作</p>
+            <p class="version-info">前提：Git 2.23以降（git switch / git restore が使えるバージョン）</p>
+            <p class="copy-hint">💡 コマンドをクリックするとクリップボードにコピーできます</p>
+        </header>
+
+        <!-- 1. 変更を確認する -->
+        <section class="section">
+            <h2><span class="section-icon">🔍</span> 1. 変更を確認する</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>目的</th>
+                        <th>コマンド</th>
+                        <th>ポイント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>追跡状況を見る</td>
+                        <td><code class="command">git status</code></td>
+                        <td>まずはこれを使う</td>
+                    </tr>
+                    <tr>
+                        <td>作業ツリー ↔ HEAD の差分</td>
+                        <td><code class="command">git diff</code></td>
+                        <td>コミット前に確認する</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ステージ済み</strong> ↔ HEAD の差分</td>
+                        <td><code class="command">git diff --staged</code></td>
+                        <td><code>--cached</code> と同じ意味</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 2. 変更を追加・確定する -->
+        <section class="section">
+            <h2><span class="section-icon">✅</span> 2. 変更を追加・確定する</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>目的</th>
+                        <th>コマンド</th>
+                        <th>ポイント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ステージへ追加</td>
+                        <td><code class="command">git add &lt;path&gt;</code> / <code class="command">git add .</code></td>
+                        <td>変更をコミット準備に入れる</td>
+                    </tr>
+                    <tr>
+                        <td>コミット作成</td>
+                        <td><code class="command">git commit -m "メッセージ"</code></td>
+                        <td>変更を履歴に保存する</td>
+                    </tr>
+                    <tr>
+                        <td>前回コミットを上書き</td>
+                        <td><code class="command">git commit --amend</code></td>
+                        <td><span class="warning">注意</span>: push 前なら安全に修正できる</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 3. ブランチを扱う -->
+        <section class="section">
+            <h2><span class="section-icon">🌿</span> 3. ブランチを扱う</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>目的</th>
+                        <th>コマンド</th>
+                        <th>ポイント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ブランチ作成 + そのまま移動</td>
+                        <td><code class="command">git switch -c feature/foo</code></td>
+                        <td><code>-c</code> は create の略</td>
+                    </tr>
+                    <tr>
+                        <td>既存ブランチへ移動</td>
+                        <td><code class="command">git switch develop</code></td>
+                        <td>旧 <code class="deprecated">checkout</code> よりシンプル</td>
+                    </tr>
+                    <tr>
+                        <td>最新リモート追跡ブランチを元に作成</td>
+                        <td><code class="command">git switch -c hotfix/bug origin/main</code></td>
+                        <td>最新の origin/main を基点に作成</td>
+                    </tr>
+                    <tr>
+                        <td>ブランチ名を変更</td>
+                        <td><code class="command">git branch -m old-name new-name</code></td>
+                        <td>ローカルブランチ名をリネームする</td>
+                    </tr>
+                    <tr>
+                        <td>マージ（早送り優先）</td>
+                        <td><code class="command">git merge --ff-only feature/foo</code></td>
+                        <td>コンフリクト時に止めることができる</td>
+                    </tr>
+                    <tr>
+                        <td>Rebase（履歴を直線に）</td>
+                        <td><code class="command">git rebase origin/main</code></td>
+                        <td><span class="warning">注意</span>: 履歴をきれいに保つことができる</td>
+                    </tr>
+                    <tr>
+                        <td>ブランチを削除</td>
+                        <td><code class="command">git branch -d feature/foo</code></td>
+                        <td><code>-D</code> で強制削除できる</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 4. リモートと同期する -->
+        <section class="section">
+            <h2><span class="section-icon">🔄</span> 4. リモートと同期する</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>目的</th>
+                        <th>コマンド</th>
+                        <th>ポイント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>最新を取得＋自動マージ (FF 限定)</td>
+                        <td><code class="command">git pull --ff-only</code></td>
+                        <td>履歴を汚さずに更新できる</td>
+                    </tr>
+                    <tr>
+                        <td>取得だけ</td>
+                        <td><code class="command">git fetch</code></td>
+                        <td>後で手動マージまたは rebase する</td>
+                    </tr>
+                    <tr>
+                        <td>変更を共有</td>
+                        <td><code class="command">git push</code></td>
+                        <td>初回は <code>-u origin &lt;branch&gt;</code> を付ける</td>
+                    </tr>
+                    <tr>
+                        <td>タグを共有</td>
+                        <td><code class="command">git push --tags</code></td>
+                        <td>タグもリモートに送信する</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 5. 変更を取り消す／やり直す -->
+        <section class="section">
+            <h2><span class="section-icon">↩️</span> 5. 変更を取り消す／やり直す</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>目的</th>
+                        <th>コマンド</th>
+                        <th>ポイント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>作業ツリー</strong>を最後のコミットに戻す</td>
+                        <td><code class="command">git restore &lt;file&gt;</code></td>
+                        <td>旧 <code class="deprecated">checkout --</code> よりシンプル</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ステージから外す</strong></td>
+                        <td><code class="command">git restore --staged &lt;file&gt;</code></td>
+                        <td>旧 <code class="deprecated">reset</code> より明確</td>
+                    </tr>
+                    <tr>
+                        <td>共有履歴を壊さず打ち消す</td>
+                        <td><code class="command">git revert &lt;hash&gt;</code></td>
+                        <td>打ち消しコミットを生成する</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 6. 作業を一時退避する -->
+        <section class="section">
+            <h2><span class="section-icon">📦</span> 6. 作業を一時退避する</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>目的</th>
+                        <th>コマンド</th>
+                        <th>ポイント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>退避</td>
+                        <td><code class="command">git stash push -m "wip: form layout"</code></td>
+                        <td><code class="deprecated">stash save</code> は非推奨</td>
+                    </tr>
+                    <tr>
+                        <td>取り出して削除</td>
+                        <td><code class="command">git stash pop</code></td>
+                        <td>最新の stash を適用して削除する</td>
+                    </tr>
+                    <tr>
+                        <td>取り出しのみ</td>
+                        <td><code class="command">git stash apply &lt;id&gt;</code></td>
+                        <td>stash を削除せずに適用する</td>
+                    </tr>
+                    <tr>
+                        <td>一覧</td>
+                        <td><code class="command">git stash list</code></td>
+                        <td>保存した stash を確認する</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 7. 履歴を調べる & クリーンアップ -->
+        <section class="section">
+            <h2><span class="section-icon">🔎</span> 7. 履歴を調べる & クリーンアップ</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>目的</th>
+                        <th>コマンド</th>
+                        <th>ポイント</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>履歴をグラフ表示</td>
+                        <td><code class="command">git log --oneline --graph --decorate --all</code></td>
+                        <td>全体を俯瞰して確認できる</td>
+                    </tr>
+                    <tr>
+                        <td>すべての操作履歴</td>
+                        <td><code class="command">git reflog</code></td>
+                        <td>ミスを復元する最後の手段</td>
+                    </tr>
+                    <tr>
+                        <td>未追跡ファイルを一掃</td>
+                        <td><code class="command">git clean -fd</code></td>
+                        <td><span class="warning">破壊的</span>。実行前に <code>-n</code> で確認</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- バージョン情報 -->
+        <div class="highlight-box">
+            <h3>どのバージョンから使える？</h3>
+            <ul>
+                <li><code>git switch</code> / <code>git restore</code> → Git 2.23（2019年）以降</li>
+                <li><code>git stash push</code> → Git 2.16（2018年）以降、<code class="deprecated">stash save</code> は非推奨</li>
+            </ul>
+        </div>
+
+        <!-- クイックリファレンス -->
+        <div class="quick-ref">
+            <h3>✔ これだけ覚えれば</h3>
+            <ol>
+                <li><strong>確認</strong> <code>git status</code> <code>git diff</code></li>
+                <li><strong>追加</strong> <code>git add .</code></li>
+                <li><strong>確定</strong> <code>git commit -m "メッセージ"</code></li>
+                <li><strong>共有</strong> <code>git push</code></li>
+                <li><strong>同期</strong> <code>git pull --ff-only</code></li>
+                <li><strong>枝分かれ</strong> <code>git switch -c feature/new</code> <code>git merge feature/new</code> <code>git rebase origin/main</code></li>
+                <li><strong>巻き戻し</strong> <code>git restore &lt;file&gt;</code> <code>git revert &lt;hash&gt;</code> <code>git stash push</code></li>
+            </ol>
+            <p class="note" style="margin-top: 1rem;">
+                旧コマンドはドキュメントや Stack Overflow を読む "受け身の知識" として頭の片隅に置き、
+                <strong>自分で打つときは新コマンドだけ使う</strong>──これが混乱を避ける最短ルートです。
+            </p>
+        </div>
+
+        <footer>
+            <p>Git 2.23+ Modern Commands Cheat Sheet</p>
+        </footer>
+    </div>
+
+    <script>
+        // コマンドをクリックしてコピー（.command と code タグ両方に対応）
+        document.querySelectorAll('.command, code').forEach(cmd => {
+            cmd.style.cursor = 'pointer';
+            cmd.title = 'クリックしてコピー';
+            
+            cmd.addEventListener('click', function() {
+                const text = this.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    // コピー成功のフィードバック
+                    const originalBg = this.style.backgroundColor;
+                    const originalColor = this.style.color;
+                    this.style.backgroundColor = 'var(--success)';
+                    this.style.color = 'white';
+                    
+                    // トーストメッセージを表示
+                    const toast = document.createElement('div');
+                    toast.textContent = 'コピーしました!';
+                    toast.style.cssText = `
+                        position: fixed;
+                        bottom: 20px;
+                        right: 20px;
+                        background-color: var(--success);
+                        color: white;
+                        padding: 0.75rem 1.5rem;
+                        border-radius: 4px;
+                        box-shadow: 0 4px 6px var(--shadow);
+                        z-index: 1000;
+                        animation: slideInBottom 0.3s ease;
+                        font-size: 0.9rem;
+                    `;
+                    document.body.appendChild(toast);
+                    
+                    setTimeout(() => {
+                        this.style.backgroundColor = originalBg;
+                        this.style.color = originalColor;
+                        toast.style.animation = 'slideOutBottom 0.3s ease';
+                        setTimeout(() => document.body.removeChild(toast), 300);
+                    }, 1500);
+                });
+            });
+        });
+
+        // アニメーションのスタイルを追加
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInBottom {
+                from {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOutBottom {
+                from {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+            }
+            
+            code:hover, .command:hover {
+                filter: brightness(1.1);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

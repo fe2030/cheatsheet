@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>VS Code ショートカット</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e3f2fd;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --accent: #0066cc;
+            --accent-light: #4d94ff;
+            --border: #dee2e6;
+            --border-light: #e9ecef;
+            --code-bg: #f0f4f8;
+            --highlight: #0052a3;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Noto Sans', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+            background-image: linear-gradient(180deg, #ffffff 0%, #f0f8ff 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section {
+            background-color: var(--bg-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px var(--shadow);
+        }
+
+        h2 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background-color: var(--bg-tertiary);
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        td:first-child {
+            color: var(--text-secondary);
+            width: 40%;
+        }
+
+        .shortcut {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--accent-light);
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: var(--accent);
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .shortcut:hover {
+            background-color: var(--accent);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .important {
+            position: relative;
+        }
+
+        .important td:first-child {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .important td:first-child::before {
+            content: "★";
+            color: var(--warning);
+            margin-right: 0.5rem;
+        }
+
+        .os-note {
+            color: var(--accent);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--bg-tertiary);
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid var(--accent-light);
+            animation: pulse 2s ease-in-out infinite;
+            text-align: center;
+            width: auto;
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.9;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent-light);
+            text-decoration: underline;
+        }
+
+        .copy-notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--success);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 4px 6px var(--shadow);
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            td:first-child {
+                width: 50%;
+            }
+
+            .shortcut {
+                font-size: 0.8em;
+                padding: 0.2rem 0.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>VS Code ショートカット</h1>
+            <p class="subtitle">効率的なコーディングのための必須ショートカット集</p>
+        </header>
+
+        <div class="os-note">
+            <p>💡 ショートカットをクリックするとコピーできます</p>
+        </div>
+
+        <!-- 全般 -->
+        <section class="section">
+            <h2><span class="section-icon">🌐</span> 全般</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作概要</th>
+                        <th>Windows</th>
+                        <th>macOS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>すべてのコマンドの表示</td>
+                        <td><span class="shortcut">Ctrl+Shift+P</span> / <span class="shortcut">F1</span></td>
+                        <td><span class="shortcut">⇧⌘P</span> / <span class="shortcut">F1</span></td>
+                    </tr>
+                    <tr>
+                        <td>クイックオープン</td>
+                        <td><span class="shortcut">Ctrl+P</span></td>
+                        <td><span class="shortcut">⌘P</span></td>
+                    </tr>
+                    <tr>
+                        <td>キーボード ショートカットを開く</td>
+                        <td><span class="shortcut">Ctrl+K Ctrl+S</span></td>
+                        <td><span class="shortcut">⌘K ⌘S</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>直近で開いたファイルを表示</td>
+                        <td><span class="shortcut">Ctrl+Tab</span></td>
+                        <td><span class="shortcut">⌃Tab</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 編集 -->
+        <section class="section">
+            <h2><span class="section-icon">✏️</span> 編集</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作概要</th>
+                        <th>Windows</th>
+                        <th>macOS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="important">
+                        <td>コードの整形</td>
+                        <td><span class="shortcut">Shift+Alt+F</span></td>
+                        <td><span class="shortcut">⇧⌥F</span></td>
+                    </tr>
+                    <tr>
+                        <td>（選択範囲なしで）行の切り取り</td>
+                        <td><span class="shortcut">Ctrl+X</span></td>
+                        <td><span class="shortcut">⌘X</span></td>
+                    </tr>
+                    <tr>
+                        <td>（選択範囲なしで）行のコピー</td>
+                        <td><span class="shortcut">Ctrl+C</span></td>
+                        <td><span class="shortcut">⌘C</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>行を下へ移動</td>
+                        <td><span class="shortcut">Alt+↓</span></td>
+                        <td><span class="shortcut">⌥↓</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>行を上へ移動</td>
+                        <td><span class="shortcut">Alt+↑</span></td>
+                        <td><span class="shortcut">⌥↑</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>行を下へコピー</td>
+                        <td><span class="shortcut">Shift+Alt+↓</span></td>
+                        <td><span class="shortcut">⇧⌥↓</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>行を上へコピー</td>
+                        <td><span class="shortcut">Shift+Alt+↑</span></td>
+                        <td><span class="shortcut">⇧⌥↑</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>行の削除</td>
+                        <td><span class="shortcut">Ctrl+Shift+K</span></td>
+                        <td><span class="shortcut">⇧⌘K</span></td>
+                    </tr>
+                    <tr>
+                        <td>行を下に挿入</td>
+                        <td><span class="shortcut">Ctrl+Enter</span></td>
+                        <td><span class="shortcut">⌘Enter</span></td>
+                    </tr>
+                    <tr>
+                        <td>行のインデント追加</td>
+                        <td><span class="shortcut">Ctrl+]</span></td>
+                        <td><span class="shortcut">⌘]</span></td>
+                    </tr>
+                    <tr>
+                        <td>行のインデント削除</td>
+                        <td><span class="shortcut">Ctrl+[</span></td>
+                        <td><span class="shortcut">⌘[</span></td>
+                    </tr>
+                    <tr>
+                        <td>名前を変更</td>
+                        <td><span class="shortcut">F2</span></td>
+                        <td><span class="shortcut">F2</span></td>
+                    </tr>
+                    <tr>
+                        <td>補完候補を開く</td>
+                        <td><span class="shortcut">Ctrl+Space</span></td>
+                        <td><span class="shortcut">⌃Space</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 選択 -->
+        <section class="section">
+            <h2><span class="section-icon">🎯</span> 選択</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作概要</th>
+                        <th>Windows</th>
+                        <th>macOS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>矩形選択(マウス選択)</td>
+                        <td><span class="shortcut">Shift+Alt+ドラッグ</span></td>
+                        <td><span class="shortcut">⇧⌥+ドラッグ</span></td>
+                    </tr>
+                    <tr>
+                        <td>矩形選択(キーボード選択)</td>
+                        <td><span class="shortcut">Ctrl+Shift+Alt+方向キー</span></td>
+                        <td><span class="shortcut">⇧⌥⌘+方向キー</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>選択範囲と同じ文字列の複数指定</td>
+                        <td><span class="shortcut">Ctrl+D</span></td>
+                        <td><span class="shortcut">⌘D</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 移動 -->
+        <section class="section">
+            <h2><span class="section-icon">🚀</span> 移動</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作概要</th>
+                        <th>Windows</th>
+                        <th>macOS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>行の先頭に移動</td>
+                        <td><span class="shortcut">Home</span></td>
+                        <td><span class="shortcut">Home</span></td>
+                    </tr>
+                    <tr>
+                        <td>行の最後に移動</td>
+                        <td><span class="shortcut">End</span></td>
+                        <td><span class="shortcut">End</span></td>
+                    </tr>
+                    <tr>
+                        <td>ファイルの先頭に移動</td>
+                        <td><span class="shortcut">Ctrl+Home</span></td>
+                        <td><span class="shortcut">⌘↑</span></td>
+                    </tr>
+                    <tr>
+                        <td>ファイルの末尾に移動</td>
+                        <td><span class="shortcut">Ctrl+End</span></td>
+                        <td><span class="shortcut">⌘↓</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>行コメントの切り替え</td>
+                        <td><span class="shortcut">Ctrl+/</span></td>
+                        <td><span class="shortcut">⌘/</span></td>
+                    </tr>
+                    <tr>
+                        <td>指定行へ移動</td>
+                        <td><span class="shortcut">Ctrl+G</span></td>
+                        <td><span class="shortcut">⌃G</span></td>
+                    </tr>
+                    <tr>
+                        <td>ファイルに移動</td>
+                        <td><span class="shortcut">Ctrl+P</span></td>
+                        <td><span class="shortcut">⌘P</span></td>
+                    </tr>
+                    <tr>
+                        <td>前に戻る</td>
+                        <td><span class="shortcut">Alt+←</span></td>
+                        <td><span class="shortcut">⌃-</span></td>
+                    </tr>
+                    <tr>
+                        <td>次に進む</td>
+                        <td><span class="shortcut">Alt+→</span></td>
+                        <td><span class="shortcut">⌃⇧-</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 検索 -->
+        <section class="section">
+            <h2><span class="section-icon">🔍</span> 検索</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作概要</th>
+                        <th>Windows</th>
+                        <th>macOS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ファイル内検索</td>
+                        <td><span class="shortcut">Ctrl+F</span></td>
+                        <td><span class="shortcut">⌘F</span></td>
+                    </tr>
+                    <tr>
+                        <td>ファイル内置換</td>
+                        <td><span class="shortcut">Ctrl+H</span></td>
+                        <td><span class="shortcut">⌥⌘F</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>次を検索</td>
+                        <td><span class="shortcut">F3</span></td>
+                        <td><span class="shortcut">⌘G</span></td>
+                    </tr>
+                    <tr>
+                        <td>前を検索</td>
+                        <td><span class="shortcut">Shift+F3</span></td>
+                        <td><span class="shortcut">⇧⌘G</span></td>
+                    </tr>
+                    <tr>
+                        <td>プロジェクト内検索</td>
+                        <td><span class="shortcut">Ctrl+Shift+F</span></td>
+                        <td><span class="shortcut">⇧⌘F</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- パネル操作 -->
+        <section class="section">
+            <h2><span class="section-icon">🪟</span> パネル操作</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作概要</th>
+                        <th>Windows</th>
+                        <th>macOS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="important">
+                        <td>サイドバーの表示/非表示</td>
+                        <td><span class="shortcut">Ctrl+B</span></td>
+                        <td><span class="shortcut">⌘B</span></td>
+                    </tr>
+                    <tr class="important">
+                        <td>ターミナルの表示/非表示</td>
+                        <td><span class="shortcut">Ctrl+@</span></td>
+                        <td><span class="shortcut">⌃@</span></td>
+                    </tr>
+                    <tr>
+                        <td>新しく統合ターミナルを表示</td>
+                        <td><span class="shortcut">Ctrl+Shift+@</span></td>
+                        <td><span class="shortcut">⌃⇧@</span></td>
+                    </tr>
+                    <tr>
+                        <td>エクスプローラーの表示</td>
+                        <td><span class="shortcut">Ctrl+Shift+E</span></td>
+                        <td><span class="shortcut">⇧⌘E</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            <p>
+                参考：<a target="_blank" href="https://qiita.com/oruponu/items/ae9c720d4522c1606daf">Visual Studio Code キーボード ショートカット</a>
+            </p>
+        </footer>
+    </div>
+
+    <div class="copy-notification" id="copyNotification">
+        コピーしました！
+    </div>
+
+    <script>
+        // ショートカットをクリックしてコピー
+        document.querySelectorAll('.shortcut').forEach(shortcut => {
+            shortcut.addEventListener('click', function() {
+                const text = this.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    // 視覚的フィードバック
+                    const original = this.style.backgroundColor;
+                    this.style.backgroundColor = 'var(--success)';
+                    this.style.color = 'white';
+                    
+                    // 通知を表示
+                    const notification = document.getElementById('copyNotification');
+                    notification.classList.add('show');
+                    
+                    setTimeout(() => {
+                        this.style.backgroundColor = original;
+                        this.style.color = '';
+                        notification.classList.remove('show');
+                    }, 1500);
+                });
+            });
+        });
+
+        // ツールチップの追加
+        document.querySelectorAll('.shortcut').forEach(shortcut => {
+            shortcut.title = 'クリックしてコピー';
+        });
+    </script>
+</body>
+</html>
